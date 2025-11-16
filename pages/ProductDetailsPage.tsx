@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MOCK_PRODUCTS } from '../constants';
+import { useProducts } from '../context/ProductsContext';
 import { useCart } from '../context/CartContext';
 import ImageZoomModal from '../components/ImageZoomModal';
 
@@ -11,9 +11,16 @@ const CheckCircleIcon: React.FC = () => (
 const ProductDetailsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { addToCart } = useCart();
-    const product = MOCK_PRODUCTS.find(p => p.id === id);
+    const { products } = useProducts();
+    const product = products.find(p => p.id === id);
     const [mainImage, setMainImage] = useState(product?.images[0]);
     const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
+
+    React.useEffect(() => {
+        if (product && product.images.length > 0) {
+            setMainImage(product.images[0]);
+        }
+    }, [product]);
 
     if (!product) {
         return (

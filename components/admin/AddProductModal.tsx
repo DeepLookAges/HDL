@@ -3,13 +3,13 @@ import { Product, ProductCategory } from '../../types';
 
 interface AddProductModalProps {
     onClose: () => void;
-    onAddProduct: (product: Product) => void;
+    onAddProduct: (product: Omit<Product, 'id'>) => void;
 }
 
 const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAddProduct }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [price, setPrice] = useState(0);
+    const [price, setPrice] = useState<number | ''>('');
     const [category, setCategory] = useState<ProductCategory>(ProductCategory.TEMPLATE);
     const [images, setImages] = useState('');
     const [features, setFeatures] = useState('');
@@ -24,8 +24,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAddProduct
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const newProduct: Product = {
-            id: `prod-${new Date().getTime()}`,
+        if (!name.trim() || price === '' || price <= 0) {
+            alert('يرجى إدخال اسم وسعر صحيح للمنتج.');
+            return;
+        }
+
+        const productData: Omit<Product, 'id'> = {
             name,
             description,
             price: Number(price),
@@ -41,7 +45,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAddProduct
             valid_until_date: validUntilDate || undefined,
         };
         
-        onAddProduct(newProduct);
+        onAddProduct(productData);
         onClose();
     };
 
@@ -55,12 +59,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAddProduct
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">اسم المنتج</label>
+                            <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">اسم المنتج <span className="text-red-500">*</span></label>
                             <input type="text" id="name" value={name} onChange={e => setName(e.target.value)} required className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900" />
                         </div>
                         <div>
-                            <label htmlFor="price" className="block text-sm font-medium text-slate-700 mb-1">السعر (بالجنيه)</label>
-                            <input type="number" id="price" value={price} onChange={e => setPrice(Number(e.target.value))} required className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900" />
+                            <label htmlFor="price" className="block text-sm font-medium text-slate-700 mb-1">السعر (بالجنيه) <span className="text-red-500">*</span></label>
+                            <input type="number" id="price" value={price} onChange={e => setPrice(e.target.value === '' ? '' : Number(e.target.value))} required className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900" />
                         </div>
                     </div>
                     
@@ -77,7 +81,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAddProduct
 
                     <div>
                         <label htmlFor="description" className="block text-sm font-medium text-slate-700 mb-1">الوصف</label>
-                        <textarea id="description" value={description} onChange={e => setDescription(e.target.value)} required rows={3} className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900"></textarea>
+                        <textarea id="description" value={description} onChange={e => setDescription(e.target.value)} rows={3} className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900"></textarea>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -89,13 +93,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAddProduct
                         </div>
                          <div>
                             <label htmlFor="images" className="block text-sm font-medium text-slate-700 mb-1">روابط الصور (مفصولة بفاصلة)</label>
-                            <input type="text" id="images" value={images} onChange={e => setImages(e.target.value)} required className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900" placeholder="https://example.com/img1.jpg, ..."/>
+                            <input type="text" id="images" value={images} onChange={e => setImages(e.target.value)} className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900" placeholder="https://example.com/img1.jpg, ..."/>
                         </div>
                     </div>
                     
                     <div>
                         <label htmlFor="features" className="block text-sm font-medium text-slate-700 mb-1">المميزات (مفصولة بفاصلة)</label>
-                        <input type="text" id="features" value={features} onChange={e => setFeatures(e.target.value)} required className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900" placeholder="Editable, High Quality, ..."/>
+                        <input type="text" id="features" value={features} onChange={e => setFeatures(e.target.value)} className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900" placeholder="Editable, High Quality, ..."/>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -111,18 +115,18 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAddProduct
 
                      <div>
                         <label htmlFor="usageInfo" className="block text-sm font-medium text-slate-700 mb-1">معلومات الاستخدام</label>
-                        <textarea id="usageInfo" value={usageInfo} onChange={e => setUsageInfo(e.target.value)} required rows={2} className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900"></textarea>
+                        <textarea id="usageInfo" value={usageInfo} onChange={e => setUsageInfo(e.target.value)} rows={2} className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900"></textarea>
                     </div>
 
                      <div>
                         <label htmlFor="targetAudience" className="block text-sm font-medium text-slate-700 mb-1">الجمهور المستهدف</label>
-                        <textarea id="targetAudience" value={targetAudience} onChange={e => setTargetAudience(e.target.value)} required rows={2} className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900"></textarea>
+                        <textarea id="targetAudience" value={targetAudience} onChange={e => setTargetAudience(e.target.value)} rows={2} className="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-900"></textarea>
                     </div>
 
                     <div className="flex items-center pt-2">
                         <input type="checkbox" id="bestseller" checked={bestseller} onChange={e => setBestseller(e.target.checked)} className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
                         <label htmlFor="bestseller" className="mr-2 block text-sm text-slate-900">
-                            تعليم كـ "الأكثر مبيعًا"
+                            تعليم كـ "الأكثر مبيعًا" (سيتم تطبيقه تلقائيًا للمنتجات الجديدة)
                         </label>
                     </div>
 

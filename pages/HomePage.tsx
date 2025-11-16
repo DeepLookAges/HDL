@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { MOCK_PRODUCTS } from '../constants';
+import { useProducts } from '../context/ProductsContext';
 
 const DesignIcon: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>;
 const VideoIcon: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 8l-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2" ry="2"/></svg>;
@@ -30,7 +30,8 @@ const WhyHDLItem: React.FC<{ icon: React.ReactNode; title: string; description: 
 );
 
 const HomePage: React.FC = () => {
-    const featuredProducts = MOCK_PRODUCTS.filter(p => p.bestseller).slice(0, 4);
+    const { products } = useProducts();
+    const featuredProducts = products.filter(p => p.bestseller).slice(0, 3);
 
     return (
         <div>
@@ -74,7 +75,7 @@ const HomePage: React.FC = () => {
             <section className="py-16 bg-slate-100">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-center mb-12">منتجات مختارة</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {featuredProducts.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}

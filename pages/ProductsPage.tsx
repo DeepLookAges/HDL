@@ -1,11 +1,11 @@
 
 import React, { useState, useMemo } from 'react';
 import ProductCard from '../components/ProductCard';
-import { MOCK_PRODUCTS } from '../constants';
+import { useProducts } from '../context/ProductsContext';
 import { Product, ProductCategory } from '../types';
 
 const ProductsPage: React.FC = () => {
-    const [products] = useState<Product[]>(MOCK_PRODUCTS);
+    const { products } = useProducts();
     const [filterCategory, setFilterCategory] = useState<string>('all');
     const [filterPrice, setFilterPrice] = useState<string>('all');
     const [filterSort, setFilterSort] = useState<string>('default');
@@ -49,26 +49,29 @@ const ProductsPage: React.FC = () => {
                         {Object.values(ProductCategory).map(cat => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
                 </div>
+
                 <div>
                     <label htmlFor="price" className="mr-2 font-semibold">السعر:</label>
                     <select id="price" value={filterPrice} onChange={e => setFilterPrice(e.target.value)} className="p-2 border rounded-md bg-white text-slate-900">
                         <option value="all">الكل</option>
-                        <option value="0-100">0 - 100 جنيه</option>
-                        <option value="101-500">101 - 500 جنيه</option>
-                        <option value="501-">أكثر من 500 جنيه</option>
+                        <option value="0-100">أقل من 100</option>
+                        <option value="100-500">100 - 500</option>
+                        <option value="500-1000">500 - 1000</option>
+                        <option value="1000-">أكثر من 1000</option>
                     </select>
                 </div>
+
                 <div>
                     <label htmlFor="sort" className="mr-2 font-semibold">ترتيب حسب:</label>
                     <select id="sort" value={filterSort} onChange={e => setFilterSort(e.target.value)} className="p-2 border rounded-md bg-white text-slate-900">
                         <option value="default">افتراضي</option>
-                        <option value="bestseller">الأكثر مبيعًا</option>
                         <option value="price-asc">السعر: من الأقل للأعلى</option>
                         <option value="price-desc">السعر: من الأعلى للأقل</option>
+                        <option value="bestseller">الأكثر مبيعًا</option>
                     </select>
                 </div>
             </div>
-
+            
             {/* Products Grid */}
             {filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -77,7 +80,7 @@ const ProductsPage: React.FC = () => {
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-16">
+                <div className="text-center bg-white p-12 rounded-lg shadow-md">
                     <p className="text-xl text-slate-600">لا توجد منتجات تطابق معايير البحث.</p>
                 </div>
             )}

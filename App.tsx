@@ -27,6 +27,7 @@ import FAQPage from './pages/FAQPage';
 import ContactPage from './pages/ContactPage';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { ProductsProvider } from './context/ProductsContext';
 
 const AppContent: React.FC = () => {
     const location = useLocation();
@@ -71,9 +72,11 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <CartProvider>
-        <HashRouter>
-          <AppContent />
-        </HashRouter>
+        <ProductsProvider>
+            <HashRouter>
+            <AppContent />
+            </HashRouter>
+        </ProductsProvider>
       </CartProvider>
     </AuthProvider>
   );
