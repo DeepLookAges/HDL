@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 
 const CheckoutPage: React.FC = () => {
-    const { cartItems, getCartTotal, clearCart } = useCart();
+    const { cartItems, getCartTotal, clearCart, getEffectivePrice } = useCart();
     const navigate = useNavigate();
     const [paymentMethod, setPaymentMethod] = useState('vodafone');
     const [receipt, setReceipt] = useState<File | null>(null);
@@ -31,6 +30,15 @@ const CheckoutPage: React.FC = () => {
             </div>
         );
     }
+
+    const total = getCartTotal();
+    const originalTotal = cartItems.reduce((acc, item) => {
+        const { originalPrice, finalPrice } = getEffectivePrice(item);
+        const priceToSum = originalPrice !== undefined ? originalPrice : finalPrice;
+        return acc + (priceToSum * item.quantity);
+    }, 0);
+    const totalDiscount = originalTotal - total;
+
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -86,16 +94,43 @@ const CheckoutPage: React.FC = () => {
                     <div className="bg-white p-6 rounded-lg shadow-md sticky top-24">
                         <h2 className="text-2xl font-bold border-b pb-4 mb-4">طلبك</h2>
                         <ul className="divide-y divide-slate-200 mb-4">
-                            {cartItems.map(item => (
-                                <li key={item.id} className="flex justify-between py-2">
-                                    <span>{item.name} x {item.quantity}</span>
-                                    <span className="font-semibold">{(item.price * item.quantity).toLocaleString('ar-EG')} جنيه</span>
+                            {cartItems.map(item => {
+                                const { finalPrice, originalPrice } = getEffectivePrice(item);
+                                const hasDiscount = originalPrice !== undefined && originalPrice > finalPrice;
+                                const itemTotal = finalPrice * item.quantity;
+                                const originalItemTotal = hasDiscount && originalPrice ? originalPrice * item.quantity : itemTotal;
+
+                                return (
+                                <li key={item.id} className="flex justify-between items-center py-3">
+                                    <div>
+                                        <span className="font-semibold">{item.name}</span>
+                                        <span className="text-sm text-slate-500"> x {item.quantity}</span>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="font-semibold block">{itemTotal.toLocaleString('ar-EG')} جنيه</span>
+                                        {hasDiscount && (
+                                            <span className="text-sm text-slate-500 line-through">{originalItemTotal.toLocaleString('ar-EG')} جنيه</span>
+                                        )}
+                                    </div>
                                 </li>
-                            ))}
+                                );
+                            })}
                         </ul>
-                         <div className="flex justify-between font-bold text-xl border-t pt-4">
-                            <span>الإجمالي</span>
-                            <span>{getCartTotal().toLocaleString('ar-EG')} جنيه</span>
+                         <div className="border-t pt-4 space-y-2">
+                            <div className="flex justify-between">
+                                <span className="text-slate-600">الإجمالي الفرعي</span>
+                                <span className="font-semibold">{originalTotal.toLocaleString('ar-EG')} جنيه</span>
+                            </div>
+                            {totalDiscount > 0 && (
+                                <div className="flex justify-between text-green-600">
+                                    <span >الخصم</span>
+                                    <span className="font-semibold">- {totalDiscount.toLocaleString('ar-EG')} جنيه</span>
+                                </div>
+                            )}
+                            <div className="flex justify-between font-bold text-xl border-t pt-2 mt-2">
+                                <span>الإجمالي النهائي</span>
+                                <span>{total.toLocaleString('ar-EG')} جنيه</span>
+                            </div>
                         </div>
                     </div>
                 </div>

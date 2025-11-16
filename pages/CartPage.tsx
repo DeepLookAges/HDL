@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
@@ -8,7 +7,7 @@ const TrashIcon: React.FC = () => (
 );
 
 const CartPage: React.FC = () => {
-    const { cartItems, removeFromCart, getCartTotal } = useCart();
+    const { cartItems, removeFromCart, getCartTotal, getEffectivePrice } = useCart();
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -24,7 +23,11 @@ const CartPage: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
                         <ul className="divide-y divide-slate-200">
-                            {cartItems.map(item => (
+                            {cartItems.map(item => {
+                                const { finalPrice, originalPrice } = getEffectivePrice(item);
+                                const hasDiscount = originalPrice !== undefined && originalPrice > finalPrice;
+
+                                return (
                                 <li key={item.id} className="flex items-center py-4">
                                     <img src={item.images[0]} alt={item.name} className="w-24 h-24 object-cover rounded-md mr-4" />
                                     <div className="flex-grow">
@@ -32,14 +35,20 @@ const CartPage: React.FC = () => {
                                         <p className="text-slate-500 text-sm">{item.category}</p>
                                     </div>
                                     <div className="text-center mx-4">
-                                        <p className="font-bold text-lg">{item.price.toLocaleString('ar-EG')} جنيه</p>
+                                        <div className="flex items-baseline justify-center gap-2">
+                                            <p className="font-bold text-lg">{finalPrice.toLocaleString('ar-EG')} جنيه</p>
+                                            {hasDiscount && (
+                                                <p className="text-sm text-slate-400 line-through">{originalPrice?.toLocaleString('ar-EG')}</p>
+                                            )}
+                                        </div>
                                         <p className="text-sm text-slate-500">الكمية: {item.quantity}</p>
                                     </div>
                                     <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700 p-2">
                                         <TrashIcon />
                                     </button>
                                 </li>
-                            ))}
+                                );
+                            })}
                         </ul>
                     </div>
 

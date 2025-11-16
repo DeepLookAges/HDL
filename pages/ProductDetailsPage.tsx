@@ -10,7 +10,7 @@ const CheckCircleIcon: React.FC = () => (
 
 const ProductDetailsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const { addToCart } = useCart();
+    const { addToCart, getEffectivePrice } = useCart();
     const { products } = useProducts();
     const product = products.find(p => p.id === id);
     const [mainImage, setMainImage] = useState(product?.images[0]);
@@ -31,6 +31,9 @@ const ProductDetailsPage: React.FC = () => {
         );
     }
     
+    const { finalPrice, originalPrice } = getEffectivePrice(product);
+    const hasDiscount = originalPrice !== undefined && originalPrice > finalPrice;
+
     return (
         <>
             <div className="bg-white">
@@ -57,7 +60,21 @@ const ProductDetailsPage: React.FC = () => {
                         <div>
                             <span className="text-sm font-semibold text-blue-600">{product.category}</span>
                             <h1 className="text-4xl font-bold my-2">{product.name}</h1>
-                            <p className="text-3xl font-bold text-purple-700 mb-6">{product.price.toLocaleString('ar-EG')} جنيه</p>
+                            <div className="flex items-baseline gap-4 mb-4">
+                               <p className="text-3xl font-bold text-purple-700">{finalPrice.toLocaleString('ar-EG')} جنيه</p>
+                                {hasDiscount && (
+                                    <p className="text-xl text-slate-500 line-through">{originalPrice?.toLocaleString('ar-EG')} جنيه</p>
+                                )}
+                            </div>
+
+                            {hasDiscount && (
+                                <div className="bg-red-50 border-r-4 border-red-500 p-4 rounded-md mb-6">
+                                    <p className="font-bold text-red-700">عرض خاص! خصم {product.discount_percentage}%</p>
+                                    {product.valid_until_date && (
+                                        <p className="text-sm text-red-600">العرض ساري حتى تاريخ: {new Date(product.valid_until_date).toLocaleDateString('ar-EG')}</p>
+                                    )}
+                                </div>
+                            )}
                             
                             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 rtl:sm:space-x-reverse mb-8">
                                  <button onClick={() => addToCart(product)} className="flex-1 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">أضف إلى السلة</button>
