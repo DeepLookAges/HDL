@@ -18,7 +18,7 @@ const AboutPage: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center mb-16">
                         <div className="md:col-span-1">
-                            <img src="https://picsum.photos/seed/hamza-profile/400/400" alt="Hamza Hilal" className="rounded-full shadow-lg mx-auto" />
+                            <img src="https://a.top4top.io/p_3607pqnrt1.jpeg" alt="Hamza Hilal" className="rounded-full shadow-lg mx-auto" />
                         </div>
                         <div className="md:col-span-2">
                             <h2 className="text-3xl font-bold mb-4">من هو حمزة هلال؟</h2>
@@ -38,12 +38,12 @@ const AboutPage: React.FC = () => {
                      <div className="mb-16">
                         <h2 className="text-3xl font-bold text-center mb-8">من أعمالنا</h2>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            <img src="https://picsum.photos/seed/work1/500/300" alt="Work sample 1" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
-                            <img src="https://picsum.photos/seed/work2/500/300" alt="Work sample 2" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
-                            <img src="https://picsum.photos/seed/work3/500/300" alt="Work sample 3" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
-                            <img src="https://picsum.photos/seed/work4/500/300" alt="Work sample 4" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
-                            <img src="https://picsum.photos/seed/work5/500/300" alt="Work sample 5" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
-                            <img src="https://picsum.photos/seed/work6/500/300" alt="Work sample 6" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
+                            <img src="https://j.top4top.io/p_3607u579z1.jpg" alt="Work sample 1" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
+                            <img src="https://l.top4top.io/p_3607idlmz1.png" alt="Work sample 2" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
+                            <img src="https://b.top4top.io/p_36075cqql1.jpg" alt="Work sample 3" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
+                            <img src="https://g.top4top.io/p_3607c5xg81.jpg" alt="Work sample 4" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
+                            <img src="https://j.top4top.io/p_3607s1r721.png" alt="Work sample 5" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
+                            <img src="https://k.top4top.io/p_36070lc561.jpeg" alt="Work sample 6" className="rounded-lg shadow-md hover:scale-105 transition-transform"/>
                         </div>
                     </div>
 
